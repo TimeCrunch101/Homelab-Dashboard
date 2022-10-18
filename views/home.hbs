@@ -1,0 +1,175 @@
+<h1 class="MyTitle">Cincinnati Tech Labs</h1>
+<h6 class="MyTitle">Support: support@cincitechlabs.com</h6>
+<hr>
+<div style="text-align: center;">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Service</button>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#disruptionModal">Add Disruption</button>
+<br>
+{{#if disruption}}
+<h1 style="color: red;">Service Disruptions</h1>
+{{/if}}
+<br>
+{{#each disruption}}
+<div style="display: flex; justify-content:center ">
+  <a href="/deleteDisruption{{this.disID}}"><i class="fas fa-trash-alt"></i></a><p style="color: white;">&nbsp{{this.description}}</p>
+</div>
+{{/each}}
+</div>
+
+<div class="MyContainer">
+    {{#each data}}
+    <div class="MyCard">
+        <a href="{{this.hyperlink}}" target="_blank"><img src="{{this.img_path}}" alt="{{this.name}}" width="300" height="50"></a>
+        <h3 style="text-align: left;">Username: {{this.username}}</h3>
+        <button style="width: 100%;" class="btn btn-primary" onclick="setClipboard('{{this.password}}')">Copy Password</button>
+        <div style="text-align: left; margin-top: 1em;">
+          <ul style="list-style: none; padding-left: 0px">
+            <li style="text-align: left;">Hostname: <a href="{{this.hyperlink}}" style="text-decoration: none; color: white;">{{this.hostname}}</a></li>
+            <li style="list-style: none; text-align:left;">IP Address: {{this.ip_addr}}</li>
+          </ul>
+        </div>
+        <div style="display: flex; justify-content: space-around">
+          <button onclick="getData({{this.app_id}})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editService" style="width: 50%;">Edit</button>
+          {{!-- <button class="btn btn-danger" style="width: 50%;">Delete</button> --}}
+          <button onclick="prep_deleteService({{this.app_id}})" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete" style="width: 50%;">Delete</button>          
+        </div>
+    </div>
+    {{/each}}
+</div>
+<hr>
+<!-- Modals -->
+{{!-- Add Service --}}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" action="/addService" method="POST" id="uploadForm" enctype="multipart/form-data">
+          <div class="col-12">
+          <div class="col-12">
+            <label for="hyperlink" class="form-label">Service Hyperlink</label>
+            <input type="text" class="form-control" name="hyperlink" required>
+          </div>
+            <label for="name" class="form-label">Service Name</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div>
+            <label for="name" class="form-label">Hostname</label>
+            <input type="text" class="form-control" name="hostname">
+          </div>
+          <div>
+            <label for="name" class="form-label">IP Address</label>
+            <input type="text" class="form-control" name="ip_addr">
+          </div>
+          <div class="col-12">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="username">
+          </div>
+          <div class="col-12">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password">
+          </div>
+        <div class="mb-3">
+            <input type="file" name="appImg">
+        </div>                       
+          <button type="submit" class="btn btn-success">Add Service</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Add Disruption --}}
+
+<div class="modal fade" id="disruptionModal" tabindex="-1" aria-labelledby="disruptionModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Describe Disruption</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" action="/addDisruption" method="POST">
+          <div class="col-12">
+            <label for="description" class="form-label">Description:</label>
+            <input type="text" class="form-control" name="description" required>
+          </div>                      
+          <button type="submit" class="btn btn-success">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- Edit Service --}}
+
+<div class="modal fade" id="editService" tabindex="-1" aria-labelledby="editService" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" class="row g-3" action="" method="POST">
+          <div class="col-12">
+            <div class="col-12">
+              <label for="hyperlink" class="form-label">Hyperlink</label>
+              <input id="hyperlink_edit" type="text" class="form-control" name="hyperlink" value="" required>
+            </div>
+            <div class="col-12">
+              <label for="name" class="form-label">Service Name</label>
+              <input id="name_edit" type="text" class="form-control" name="name" value="" required>
+            </div>
+            <div>
+              <label for="hostname" class="form-label">Hostname</label>
+              <input id="hostname_edit" type="text" class="form-control" name="hostname" value="">
+            </div>
+            <div>
+              <label for="ip_addr" class="form-label">IP Address</label>
+              <input id="ip_addr_edit" type="text" class="form-control" name="ip_addr" value="">
+            </div>
+            <div class="col-12">
+              <label for="username" class="form-label">Username</label>
+              <input id="username_edit" type="text" class="form-control" name="username" value="">
+            </div>
+            <div class="col-12">
+              <label for="password" class="form-label">Password</label>
+              <input id="password_edit" type="text" class="form-control" name="password" value="">
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{!-- Delete Service --}}
+
+<div class="modal fade" id="delete" tabindex="-1" aria-labelledby="delete" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div class="col-12">
+            <div class="col-12">
+              <h1>ARE YOUR SURE YOU WANT TO DELETE?</h1>
+              <h2>THIS CAN NOT BE UNDONE!</h2>
+            </div>
+            <div id="divToDeleteService"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

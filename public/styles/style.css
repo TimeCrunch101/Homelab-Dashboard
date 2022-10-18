@@ -1,0 +1,34 @@
+body {
+    background-color: #616161;
+}
+.MyContainer {
+    margin: 0 auto;
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.8em;
+    justify-content: center;
+    margin-top: 5em;
+    margin-bottom: 3em;
+}
+.MyTitle {
+    text-align: center;
+}
+
+.download {
+    text-decoration: none;
+    text-align: center;
+    color: red;
+    border: 2px solid teal;
+    width: 120px;
+    border-radius: 1em;
+}
+.MyCard {
+    width: 325px;
+    height: 300px;
+    border-radius: 1em;
+    padding: 10px;
+    background-color: rgb(10, 18, 90);
+    text-align: center;
+    color: white;
+}
